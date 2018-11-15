@@ -23,5 +23,6 @@ namespace Genetic_algorithms
 		public int Value { get; set; }
 		public double Solution { get; set; }
 		public int Weight { get; set; }		
+		public int Age { get; set; }
 	}
 }

@@ -11,7 +11,7 @@ namespace Genetic_algorithms
 		private static ConsoleUI ConsoleUI;
 		private static Random Random;
 		private static List<Individual> Population;
-		
+
 
 		static Program()
 		{
@@ -21,22 +21,32 @@ namespace Genetic_algorithms
 		}
 		static void Main(string[] args)
 		{
-			
+
 			initialisePopulation();
-			for (int i = 0; i < 600; i++)
+			for (int i = 0; i < 10000; i++)
 			{
-				ConsoleUI.LogMessage($"Current genneration: {i}");
+
 				evaluateFitness();
-				ConsoleUI.LogIndividual(Population.First());
+				if (i % 100 == 0)
+				{
+					ConsoleUI.LogMessage($"Current genneration: {i}");
+					ConsoleUI.LogIndividual(Population.First());
+				}
 				pickParents();
 				generateOffspring();
+				cullTheElderly();
 			}
 
 			//ConsoleUI.LogPopulation(Population);
 			Console.ReadLine();
 		}
 
-		
+		private static void cullTheElderly()
+		{
+			Population = Population.Where(individual => individual.Age < 30).ToList();
+		}
+
+
 		private static void generateOffspring()
 		{
 			var offspringValue = parent1.Value + parent2.Value / 2;
@@ -44,6 +54,10 @@ namespace Genetic_algorithms
 			{
 				Value = offspringValue
 			};
+			foreach (var individual in Population)
+			{
+				individual.Age++;
+			}
 			Population.Add(offspring);
 		}
 
@@ -63,7 +77,7 @@ namespace Genetic_algorithms
 
 			foreach (var individual in Population)
 			{
-				
+
 
 				if (randomNumber <= individual.Weight)
 				{
@@ -83,7 +97,7 @@ namespace Genetic_algorithms
 			foreach (var individual in Population)
 			{
 				individual.Solution =
-					(-1d * (individual.Value * (double) individual.Value) - (23d * individual.Value)) + 4;
+					(-1d * (individual.Value * (double)individual.Value) - (23d * individual.Value)) + 4;
 			}
 
 			Population = Population.OrderByDescending(e => e.Solution).ToList();
@@ -91,7 +105,10 @@ namespace Genetic_algorithms
 			for (int i = 0; i < Population.Count; i++)
 			{
 				var individual = Population[i];
-				individual.Weight = (Population.Count - i + 2) / 2;
+				individual.Weight =
+					(Population.Count - (2 * i + 1)) < 1 ?
+					Math.Abs(1) :
+					(Population.Count - (2 * i + 1));
 			}
 		}
 
