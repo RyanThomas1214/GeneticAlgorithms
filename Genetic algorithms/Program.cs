@@ -23,11 +23,11 @@ namespace Genetic_algorithms
 		{
 
 			initialisePopulation();
-			for (int i = 0; i < 10000; i++)
+			for (int i = 0; i < 2000000; i++)
 			{
 
 				evaluateFitness();
-				if (i % 100 == 0)
+				if (i % 1000 == 0)
 				{
 					ConsoleUI.LogMessage($"Current genneration: {i}");
 					ConsoleUI.LogIndividual(Population.First());
@@ -36,8 +36,7 @@ namespace Genetic_algorithms
 				generateOffspring();
 				cullTheElderly();
 			}
-
-			//ConsoleUI.LogPopulation(Population);
+			
 			Console.ReadLine();
 		}
 
